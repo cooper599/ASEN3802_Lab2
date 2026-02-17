@@ -42,9 +42,9 @@ for i = 1:length(a)
 end
 
 % Calculating Steady state for all
-rho.("Aluminum") = 2810;
-rho.("Brass") = 8500;
-rho.("Steel") = 8000;
+rho.("Aluminum") = 2810; rho.("Brass") = 8500; rho.("Steel") = 8000;
+cp.("Aluminum") = 960; cp.("Brass") = 380; cp.("Steel") = 500;
+k.("Aluminum") = 130; k.("Brass") = 115; k.("Steel") = 16.2;
 
 for i = 1:length(a)
     
