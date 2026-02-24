@@ -82,3 +82,38 @@ for i = 1:length(a)
     title("Experimental vs Analytical Steady State Temperatures Along Bar,", a(i).name, Interpreter="none")
     legend("Thermocouples","Experimental Fit","Experimental Error Bars","","Analytical","Analytical Error Bars","",Location="northwest");
 end
+
+% Task 2 
+
+% Extracting Initial Temperatures, fitting line
+for i = 1:length(a)
+    % Temp data
+    temp = data.(a(i).name);
+    % Cleaning data for steady state temperature
+    temps = temp(1,2:9);
+    temps = fillmissing(temps,"previous",1);
+    Initial.(a(i).name) = temps(end,:); %Initial state 
+    % Getting slope and intercept of fitting steady state
+    p = polyfit(thermocoupleLoc,Initial.(a(i).name),1);
+    slopes_0(i) = p(1);
+    intercepts_0(i) = p(2);
+end
+
+% Plotting Initial Conditions
+for i = 1:length(a)
+    figure(); hold on;
+    err = 2;
+    % Scatter of thermocouple steady state data at locations
+    scatter(thermocoupleLoc,Initial.(a(i).name), "k");
+    % Extrapolated fitted steady state solution
+    plot(span,intercepts_0(i) + span*slopes_0(i),"r"); % Polyfit line
+    plot(span,(intercepts_0(i) + span*slopes_0(i)) + err,'b--'); % upper error
+    plot(span,(intercepts_0(i) + span*slopes_0(i)) - err,'b--'); % lower error
+    % Scale x axis for beginning to end of bar
+    xlim([0 L]);
+    ylim([14,22]);
+    xlabel("Position Along Bar (m)");
+    ylabel("Initial Temperatures (\circ C)");
+    title("Initial Conditions Across the Bar,", a(i).name, Interpreter="none")
+    legend("Thermocoupes","Experimental Fit", "Error Bar");
+end
