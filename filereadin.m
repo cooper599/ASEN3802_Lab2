@@ -38,11 +38,12 @@ for i = 1:length(a)
     % Cleaning data for steady state temperature
     temps = temp(:,2:9);
     temps = fillmissing(temps,"previous",1);
+    % Steady state values filled from end of data table
     Tss.(a(i).name) = temps(end,:);
     % Getting slope and intercept of fitting steady state
     p = polyfit(thermocoupleLoc,Tss.(a(i).name),1);
-    slopes(i) = p(1);
-    intercepts(i) = p(2);
+    slopes(i) = p(1); % Puts slopes of all into array
+    intercepts(i) = p(2); % Put intercept of all into array for plotting
 end
 
 % Calculating Steady state for all
@@ -57,22 +58,27 @@ for i = 1:length(a)
     Qdot(i) = volts(i) * amps(i)/1000; % P = IV converted to standard units
     H(i) = Qdot(i)/(k.(names(i))*A);
     % Steady state heat distribution function
-    vx.(fullname(i)) = intercepts(i) + H(i).*x;
+    vx.(fullname(i)) = intercepts(i) + H(i).*x; % creating analytic solution for plotting
 end
 
 % Plotting
 for i = 1:length(a)
     figure(i); hold on;
+    err = 2; % Degrees celcius 
     % Scatter of thermocouple steady state data at locations
-    scatter(thermocoupleLoc,Tss.(a(i).name));
+    scatter(thermocoupleLoc,Tss.(a(i).name),'k');
     % Extrapolated fitted steady state solution
-    plot(span,intercepts(i) + span*slopes(i)); % Polyfit line
+    plot(span,intercepts(i) + span*slopes(i),"b"); % Polyfit line
+    plot(span,(intercepts(i) + span*slopes(i)) + err,'b--'); % upper error
+    plot(span,(intercepts(i) + span*slopes(i)) - err,'b--'); % lower error
     % Analytical Steady State solution
-    plot(x,vx.(fullname(i)));
+    plot(x,vx.(fullname(i)),"r");
+    plot(x,vx.(fullname(i)) + err,'r--'); % Upper error
+    plot(x,vx.(fullname(i)) - err,'r--'); % lower error
     % Scale x axis for beginning to end of bar
     xlim([0 L]);
     xlabel("Position Along Bar (m)");
     ylabel("Temperature (\circ C)");
     title("Experimental vs Analytical Steady State Temperatures Along Bar,", a(i).name, Interpreter="none")
-    legend("Thermocoupes","Experimental Fit","Analytical");
+    legend("Thermocouples","Experimental Fit","Experimental Error Bars","","Analytical","Analytical Error Bars","",Location="northwest");
 end
