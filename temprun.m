@@ -132,6 +132,7 @@ xp2 = thermocoupleLoc(end); % x position of thermocouple 8
 Lr = L(end); % overall length of rod
 
 N = 10; % Max number of terms
+t = [1 1000]; % Time in seconds for loops
 n = 1:1:10; % Array of possible terms
 
 % alpha = k/(rho*cp), formula in intro docs
@@ -169,10 +170,6 @@ for i = 1:N
     ualt1000(i) = intercepts(1) + H(1)*xp2 + fssum1000;
 end
 
-% Fourier Number Calculation
-Fo1 = alpha*t1/L^2;
-Fo1000 = alpha*t2/L^2;
-
 % Creating figures to show convergence after n terms
 figure();
 subplot(2,1,1)
@@ -185,3 +182,52 @@ plot(n,ualt1000);
 xlabel("Number of terms (n)");
 ylabel("Temperature at Th8 (\circ C)");
 title("Temperature at Thermocouple 8 vs n Number Modes Approximation for t = 1000");
+
+% Task 2
+for i = 1:length(a)
+    file = a(i).name;
+
+    raw = data.(file);
+    t = raw(:,1);
+    Texpt = raw(:,2:9);  % 8 thermocouples
+
+    % material properties
+    mat = names(i);
+    alpha = k.(mat)/(rho.(mat)*cp.(mat));
+
+    % Model IA: analytical H
+    H_IA  = H(i);
+    T0_IA = intercepts(i);
+
+    % Model IB: 
+    H_IB = slopes(i);
+
+    % Model IA plot
+    figure(); hold on; grid on;
+    for j = 1:8
+        Tana = rodTransientModel(thermocoupleLoc(j), t, L, alpha, H_IA, T0_IA, N, H_IA);
+        plot(t, Tana, 'LineWidth', 1.2);
+        plot(t, Texpt(:,j), '--', 'LineWidth', 1.0);
+    end
+    title("Model IA: " + file, "Interpreter","latex");
+    xlabel("Time (s)"); ylabel("Temperature (C)");
+    legend("TC1_{ana}", "TC1_{exp}", "TC2_{ana}", "TC2_{exp}", "TC3_{ana}", "TC3_{exp}", "TC4_{ana}", "TC4_{exp}",...
+        "TC5_{ana}", "TC5_{exp}", "TC6_{ana}", "TC6_{exp}", "TC7_{ana}", "TC7_{exp}", "TC8_{ana}", "TC8_{exp}", location="eastoutside")
+    
+    % Model IB plot
+    figure(); hold on; grid on;
+    for j = 1:8
+        Tana = rodTransientModel(thermocoupleLoc(j), t, L, alpha, H_IA, T0_IA, N, H_IB);
+        plot(t, Tana, 'LineWidth', 1.2);
+        plot(t, Texpt(:,j), '--', 'LineWidth', 1.0);
+    end
+    title("Model IB: " + file, "Interpreter","latex");
+    xlabel("Time (s)"); ylabel("Temperature (C)");
+    legend("TC1_{ana}", "TC1_{exp}", "TC2_{ana}", "TC2_{exp}", "TC3_{ana}", "TC3_{exp}", "TC4_{ana}", "TC4_{exp}",...
+        "TC5_{ana}", "TC5_{exp}", "TC6_{ana}", "TC6_{exp}", "TC7_{ana}", "TC7_{exp}", "TC8_{ana}", "TC8_{exp}", location="eastoutside")
+    
+
+end
+
+
+
