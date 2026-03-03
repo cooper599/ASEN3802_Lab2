@@ -132,7 +132,6 @@ xp2 = thermocoupleLoc(end); % x position of thermocouple 8
 Lr = L(end); % overall length of rod
 
 N = 10; % Max number of terms
-t = [1 1000]; % Time in seconds for loops
 n = 1:1:10; % Array of possible terms
 
 % alpha = k/(rho*cp), formula in intro docs
@@ -169,6 +168,10 @@ for i = 1:N
     ualt1(i) = intercepts(1) + H(1)*xp2 + fssum1;
     ualt1000(i) = intercepts(1) + H(1)*xp2 + fssum1000;
 end
+
+% Fourier Number Calculation
+Fo1 = alpha*t1/L^2;
+Fo1000 = alpha*t2/L^2;
 
 % Creating figures to show convergence after n terms
 figure();
