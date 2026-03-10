@@ -258,47 +258,6 @@ for i = 1:length(a)
     legend("TC1_{ana}", "TC1_{exp}", "TC2_{ana}", "TC2_{exp}", "TC3_{ana}", "TC3_{exp}", "TC4_{ana}", "TC4_{exp}",...
         "TC5_{ana}", "TC5_{exp}", "TC6_{ana}", "TC6_{exp}", "TC7_{ana}", "TC7_{exp}", "TC8_{ana}", "TC8_{exp}", location="eastoutside");
 end
-%% Task 4
-% Getting transient responses for each thermocouple
-% for i = 1:length(a)
-%     thermotransient.(fullname(i)) = data.(fullname(i))(:,2:end);
-%     time.(fullname(i)) = data.(fullname(i))(:,1);
-% end
-% 
-% for i = 1:length(a)
-%     % Getting M and H values
-%     T0 = intercepts_0(i);
-%     M = slopes_0(i);
-%     Hloop = H(i);
-% 
-%     % Calculating alpha
-%     mat = names(i);
-%     alpha = k.(mat)/(rho.(mat)*cp.(mat));
-% 
-%     % Creating Figures
-%     figure(); hold on;
-%     % Transient response
-%     % Summation up to 10 terms
-%     for ii = 1:length(thermocoupleLoc)
-%         x = thermocoupleLoc(ii);
-%         summation = 0;
-%         for n = 1:10
-%             templambda = (2*n-1)*pi/(2*L);
-%             tempbn =  (8*L*(-1)^(n+1))/((2*n-1)^2*pi^2) * (M-Hloop);
-%             tempsum = tempbn*sin(templambda*x).*exp((-templambda^2*alpha).*time.(fullname(i)));
-%             summation = summation + tempsum;
-%         end
-%         transientresp = T0 + Hloop*thermocoupleLoc(ii) + summation;
-%         % Plotting analytical
-%         plot(time.(fullname(i)),transientresp,'-');
-%         %Plotting experimental
-%         plot(time.(fullname(i)),thermotransient.(fullname(i))(:,ii),'--');
-%     end
-%     % Label etc.
-%     xlabel("Time t (s)");
-%     ylabel("Temperature (\circ C)");
-%     title("Model IA: ", fullname(i),Interpreter="none");
-% end
 
 %% Functions:
 function T = rodTransientModel(x, t, L, alpha, Huse, T0use, N, bnScale)
