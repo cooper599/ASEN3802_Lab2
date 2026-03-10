@@ -187,6 +187,20 @@ xlabel("Number of terms (n)");
 ylabel("Temperature at Th8 (\circ C)");
 title("Temperature at Thermocouple 8 vs n Number Modes Approximation for t = 1000");
 
+colors = [
+    230, 159,   0; % Orange
+    86,  180, 233; % SkyBlue
+    0,   158, 115; % BluishGreen
+    240, 228,  66; % Yellow
+    0,   114, 178; % Blue
+    213,  94,   0; % Vermillion
+    204, 121, 167; % ReddishPurple
+    0,     0,   0  % Black
+]/255;
+
+% Apply the colors
+colororder(colors);
+
 % Task 2, 3, 4
 for i = 1:length(a)
     file = a(i).name;
@@ -210,8 +224,8 @@ for i = 1:length(a)
     figure(); hold on; grid on;
     for j = 1:8
         Tana = rodTransientModel(thermocoupleLoc(j), t, L, alpha, H_IA, T0_IA, N, H_IA);
-        plot(t, Tana, 'LineWidth', 1.2);
-        plot(t, Texpt(:,j), '--', 'LineWidth', 1.0);
+        plot(t, Tana, 'LineWidth', 1.2,Color=colors(j,:));
+        plot(t, Texpt(:,j), '--', 'LineWidth', 1.0,Color=colors(j,:));
     end
     title("Model IA: ", fullname(i),Interpreter="none");
     xlabel("Time (s)"); ylabel("Temperature (\circ C)");
@@ -222,8 +236,8 @@ for i = 1:length(a)
     figure(); hold on; grid on;
     for j = 1:8
         Tana = rodTransientModel(thermocoupleLoc(j), t, L, alpha, H_IB, T0_IA, N, H_IB);
-        plot(t, Tana, 'LineWidth', 1.2);
-        plot(t, Texpt(:,j), '--', 'LineWidth', 1.0);
+        plot(t, Tana, 'LineWidth', 1.2,Color=colors(j,:));
+        plot(t, Texpt(:,j), '--', 'LineWidth', 1.0,Color=colors(j,:));
     end
     title("Model IB: ", fullname(i),Interpreter="none");
     xlabel("Time (s)"); ylabel("Temperature (\circ C)");
@@ -236,8 +250,8 @@ for i = 1:length(a)
     figure(); hold on; grid on;
     for j = 1:8
         Tana = rodTransientModel(thermocoupleLoc(j), t, L, alpha, H_IB, T0, N, (H_IB-M));
-        plot(t, Tana, 'LineWidth', 1.2);
-        plot(t, Texpt(:,j), '--', 'LineWidth', 1.0);
+        plot(t, Tana, 'LineWidth', 1.2,Color=colors(j,:));
+        plot(t, Texpt(:,j), '--', 'LineWidth', 1.0,Color=colors(j,:));
     end
     title("Model II: ", fullname(i),Interpreter="none");
     xlabel("Time (s)"); ylabel("Temperature (\circ C)");
