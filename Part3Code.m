@@ -415,3 +415,32 @@ for i = 1:length(a)
     legend("TC1_{ana}", "TC1_{exp}", "TC2_{ana}", "TC2_{exp}", "TC3_{ana}", "TC3_{exp}", "TC4_{ana}", "TC4_{exp}",...
         "TC5_{ana}", "TC5_{exp}", "TC6_{ana}", "TC6_{exp}", "TC7_{ana}", "TC7_{exp}", "TC8_{ana}", "TC8_{exp}", location="eastoutside")
 end
+
+% Task 3 
+
+for i=1:length(a)
+    file = a(i).name; % Reading in TC8 experimental data
+    raw = data.(file);
+    t = raw(:,1);
+    Texpt = raw(:,9);
+
+    IA = Model_IA_data.(file); % Loading in model data
+    IB = Model_IB_data.(file);
+    II = Model_II_data.(file);
+    III = Model_III_data.(file);
+
+    figure
+    hold on 
+    grid on
+    plot(t,IA, 'LineWidth', 1, Color=colors(1,:))
+    plot(t,IB, 'LineWidth', 1, Color=colors(2,:))
+    plot(t,II, 'LineWidth', 1, Color=colors(3,:))
+    plot(t,III, 'LineWidth', 1, Color=colors(4,:))
+    plot(t,Texpt,'k.', 'LineWidth', 0.75)
+    plot(t,Texpt + err*ones(length(Texpt)),'b--'); % upper error
+    plot(t,Texpt - err*ones(length(Texpt)),'b--'); % lower error
+    title('Model Comparison for:', fullname(i), Interpreter="none")
+    legend('Model IA', 'Model IB', 'Model II', 'Model III', 'Experimental', 'Error Bars', 'Location','southeast')
+    hold off
+
+end
