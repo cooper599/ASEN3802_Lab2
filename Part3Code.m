@@ -358,6 +358,13 @@ for i = 1:length(a)
 end
 
 % Plotting Model 3 (Model IB w/ adjusted alphas)
+
+epsT = 0.75;      % deg C tolerance to declare "steady"
+holdTime = 60;    % seconds it must stay steady
+
+tss  = NaN(1,length(a));
+Foss = NaN(1,length(a));
+
 for i = 1:length(a)
     file = a(i).name;
 
@@ -368,8 +375,34 @@ for i = 1:length(a)
     % Data Needed for IB
     H_IB = slopes(i);
     T0_IA = intercepts(i);
-
     alpha = alphaadjusted(i);
+
+    % Analytical Temps
+    TanaAll = zeros(length(t), 8);
+    TssAll = zeros(1,8);
+
+    for j = 1:8
+        xj = thermocoupleLoc(j);
+        TanaAll(:,j) = rodTransientModel(xj, t, L, alpha, H_IB, T0_IA, N, H_IB);
+        TssAll(j)    = T0_IA + H_IB*xj;  % steady-state line at that TC
+    end
+
+    % Compute time to steady state
+    dev = max(abs(TanaAll - TssAll), [], 2);  % max deviation across TCs at each time
+
+    dt = median(diff(t));
+    holdN = max(1, round(holdTime/dt));
+
+    ok = dev <= epsT;
+
+    for k = 1:(length(t) - holdN + 1)
+        if all(ok(k:k+holdN-1))
+            tss(i) = t(k);
+            Foss(i) = alpha * tss(i) / L^2;  % Fourier number at steady state
+            break;
+        end
+    end
+
     % Model III plot
     figure(); hold on; grid on;
     for j = 1:8
